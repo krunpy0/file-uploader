@@ -178,6 +178,23 @@ app.get("/files/:fileId", authenticateToken, async (req, res) => {
   }
 });
 
+app.delete("/delete/file/:id", authenticateToken, async (req, res) => {
+  const fileId = req.params.id;
+  try {
+    const file = await prisma.file.findFirst({
+      where: { id: fileId },
+    });
+    if (req.user.id !== file.userId)
+      return res.status(401).json({ message: "You are not owner of the file" });
+    await prisma.file.delete({
+      where: { id: fileId },
+    });
+    return res.send(204).json({ message: "Deleted" });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 app.listen(process.env.PORT || 3001, () => {
   console.log("Server is running");
 });

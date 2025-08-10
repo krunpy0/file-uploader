@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/en";
+import styles from "./YourFies.module.css";
 dayjs.locale("en");
-export function YourFiles({ user }) {
+export function YourFiles({ user, refreshTrigger }) {
   const [userInfo, setUserInfo] = useState(null);
 
   async function fetchUser(id) {
@@ -14,9 +15,49 @@ export function YourFiles({ user }) {
     console.log(result);
   }
 
+  async function handleDelete(id) {
+    try {
+      const res = await fetch(`http://localhost:3000/delete/file/${id}`, {
+        credentials: "include",
+        method: "DELETE",
+      });
+      if (res.ok) {
+        fetchUser(user.id);
+      } else {
+        const result = await res.json();
+        console.log(result);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  function humanFileSize(bytes, si = true, dp = 1) {
+    const thresh = si ? 1000 : 1024;
+
+    if (Math.abs(bytes) < thresh) {
+      return bytes + " B";
+    }
+
+    const units = si
+      ? ["kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+      : ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
+    let u = -1;
+    const r = 10 ** dp;
+
+    do {
+      bytes /= thresh;
+      ++u;
+    } while (
+      Math.round(Math.abs(bytes) * r) / r >= thresh &&
+      u < units.length - 1
+    );
+
+    return bytes.toFixed(dp) + " " + units[u];
+  }
+
   useEffect(() => {
     fetchUser(user.id);
-  }, [user.id]);
+  }, [user.id, refreshTrigger]);
 
   if (!user) return <div>Loading</div>;
   if (!userInfo) return <p>Loading user info...</p>;
@@ -29,13 +70,21 @@ export function YourFiles({ user }) {
           {userInfo.files?.map((file) => (
             <div key={file.id}>
               <a
+                className={styles.link}
                 href={`http://localhost:3000/files/${file.id}`}
                 target="__blank"
               >
                 {file.name}
               </a>
               <p>{dayjs(file.createdAt).format("DD MMMM YYYY, HH:mm")}</p>
-              <p>{file.size} bytes</p>
+              {humanFileSize(file.size)}
+              <button
+                onClick={() => {
+                  handleDelete(file.id);
+                }}
+              >
+                Delete
+              </button>
               <hr />
             </div>
           ))}

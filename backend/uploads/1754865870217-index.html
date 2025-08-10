@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="ISO-8857">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Волшебный Мир Спагетти</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fdf5e6; /* Кремовый фон, как цвет пасты */
+            color: #333;
+        }
+        header {
+            background-color: #d2691e; /* Шоколадный или томатный цвет для заголовка */
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Адаптивная сетка */
+            gap: 20px; /* Промежуток между фотографиями */
+        }
+        .gallery-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden; /* Чтобы скругленные углы работали с изображением */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 250px; /* Фиксированная высота для единообразия */
+            object-fit: cover; /* Масштабирование с сохранением пропорций и обрезкой */
+            display: block;
+        }
+        .gallery-item .caption {
+            padding: 15px;
+            text-align: center;
+        }
+        .gallery-item .caption h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .gallery-item .caption p {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 0;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            background-color: #333;
+            color: #f0f0f0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Галерея Восхитительных Спагетти</h1>
+    </header>
+
+    <div class="container">
+        <div class="gallery">
+            <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Спагетти Болоньезе">
+                <div class="caption">
+                    <h3>Спагетти Болоньезе</h3>
+                    <p>Классический насыщенный мясной соус.</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/1437267/pexels-photo-1437267.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Спагетти Карбонара">
+                <div class="caption">
+                    <h3>Спагетти Карбонара</h3>
+                    <p>Сливочный соус с беконом и яйцом.</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://chef.ru/wp-content/uploads/2022/10/img_8897.jpeg" alt="Спагетти Алио Олио">
+                <div class="caption">
+                    <h3>Спагетти Алио Олио</h3>
+                    <p>Просто, но элегантно: чеснок и оливковое масло.</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://www.chefmarket.ru/blog/wp-content/uploads/2020/06/ettuccine-alfredo-2000x1200.jpg" alt="Спагетти с Морепродуктами">
+                <div class="caption">
+                    <h3>Спагетти с Морепродуктами</h3>
+                    <p>Богатство вкусов моря.</p>
+                </div>
+            </div>
+
+             <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Спагетти Песто">
+                <div class="caption">
+                    <h3>Спагетти Песто</h3>
+                    <p>Ароматный соус с базиликом и кедровыми орешками.</p>
+                </div>
+            </div>
+
+             <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/2456435/pexels-photo-2456435.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Спагетти Альфредо">
+                <div class="caption">
+                    <h3>Спагетти Альфредо</h3>
+                    <p>Нежный сливочно-сырный соус.</p>
+                </div>
+            </div>
+            <!-- Вы можете добавить больше блоков .gallery-item с другими фотографиями -->
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Любители Спагетти. Все права защищены (на самом деле нет, это просто пример).</p>
+    </footer>
+
+</body>
+</html>

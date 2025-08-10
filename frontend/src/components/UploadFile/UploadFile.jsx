@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export function UploadFile() {
-  const navigate = useNavigate();
+export function UploadFile({ fetchMe, onUploadSuccess }) {
   const [file, setFile] = useState(null);
   function handleFileChange(e) {
     setFile(e.target.files[0]);
@@ -22,8 +21,10 @@ export function UploadFile() {
         body: formData,
       });
       const data = await res.json();
+      fetchMe();
       console.log(data);
-      navigate("/");
+      setFile(null);
+      onUploadSuccess();
     } catch (err) {
       console.log(err);
     }

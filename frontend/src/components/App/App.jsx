@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UploadFile } from "../UploadFile/UploadFile";
-import { YourFiles } from "../YourFiles/YourFiles";
+import { YourFiles } from "../YourFiles/YourFiles.jsx";
 import styles from "./App.module.css";
 function App() {
   const [user, setUser] = useState(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   async function fetchMe() {
     try {
       const res = await fetch("http://localhost:3000/me", {
@@ -31,6 +33,9 @@ function App() {
       console.log(err);
     }
   }
+  function refreshFiles() {
+    setRefreshTrigger((prev) => prev + 1);
+  }
   useEffect(() => {
     fetchMe();
     console.log(user);
@@ -41,8 +46,11 @@ function App() {
       <>
         <p>Hello, {user.user}</p>
         <button onClick={logOut}>Log out</button>
-        <UploadFile fetchMe={fetchMe}></UploadFile>
-        <YourFiles user={user}></YourFiles>
+        <UploadFile
+          onUploadSuccess={refreshFiles}
+          fetchMe={fetchMe}
+        ></UploadFile>
+        <YourFiles user={user} refreshTrigger={refreshTrigger}></YourFiles>
       </>
     );
   } else {
