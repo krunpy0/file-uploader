@@ -1,16 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function UploadFile() {
+  const navigate = useNavigate();
   const [file, setFile] = useState(null);
-  const [error, setError] = useState(null);
   function handleFileChange(e) {
     setFile(e.target.files[0]);
   }
 
   async function handleUpload() {
     if (!file) {
-      setError("Select file first!");
-      return;
+      alert("Set file first!");
     }
     const formData = new FormData();
     formData.append("file", file);
@@ -23,6 +23,7 @@ export function UploadFile() {
       });
       const data = await res.json();
       console.log(data);
+      navigate("/");
     } catch (err) {
       console.log(err);
     }

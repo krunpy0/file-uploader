@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UploadFile } from "../UploadFile/UploadFile";
+import { YourFiles } from "../YourFiles/YourFiles";
 import styles from "./App.module.css";
 function App() {
   const [user, setUser] = useState(null);
@@ -32,6 +33,7 @@ function App() {
   }
   useEffect(() => {
     fetchMe();
+    console.log(user);
   }, []);
 
   if (user) {
@@ -39,7 +41,8 @@ function App() {
       <>
         <p>Hello, {user.user}</p>
         <button onClick={logOut}>Log out</button>
-        <UploadFile></UploadFile>
+        <UploadFile fetchMe={fetchMe}></UploadFile>
+        <YourFiles user={user}></YourFiles>
       </>
     );
   } else {

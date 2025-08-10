@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const cors = require("cors");
 const multer = require("multer");
+const path = require("path");
 const { PrismaClient } = require("./generated/prisma");
 const bcrypt = require("bcryptjs");
 
@@ -18,6 +19,20 @@ app.use(
     credentials: true,
   })
 );
+
+function authenticateToken(req, res, next) {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ message: "Invalid token" });
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = payload;
+    next();
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err });
+  }
+}
 
 async function findUser() {
   const user = await prisma.user.findMany();
@@ -62,7 +77,7 @@ app.post("/login", async (req, res) => {
     where: { username: req.body.username },
   });
   console.log(user);
-
+  ////
   if (!user || !(await bcrypt.compare(req.body.password, user.password)))
     return res.status(401).json({ message: "Invalid credentials" });
 
@@ -79,17 +94,8 @@ app.post("/login", async (req, res) => {
   res.status(200).json({ message: "Logged in" });
 });
 
-app.get("/me", (req, res) => {
-  const token = req.cookies.token;
-  if (!token) return res.status(401).json({ message: "Invalid token" });
-
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    res.status(200).json({ user: payload.username });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: err });
-  }
+app.get("/me", authenticateToken, (req, res) => {
+  res.status(200).json({ user: req.user.username, id: req.user.id });
 });
 
 app.get("/logout", (req, res) => {
@@ -108,31 +114,68 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
-app.post("/upload", upload.single("file"), async (req, res) => {
-  // verify user
-  const token = req.cookies.token;
-  if (!token) return res.status(401).json({ message: "Invalid token" });
-  let user;
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    user = payload;
-    console.log(user);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: err });
+app.post(
+  "/upload",
+  authenticateToken,
+  upload.single("file"),
+  async (req, res) => {
+    // verify user
+
+    //
+    const file = req.file;
+    const user = req.user;
+    const query = await prisma.file.create({
+      data: {
+        name: file.originalname,
+        storagePath: file.path,
+        size: file.size,
+        userId: user.id,
+      },
+    });
+    console.log(query);
+    res.status(201).json({ message: "File uploaded", file: req.file });
   }
-  //
-  const file = req.file;
-  const query = await prisma.file.create({
-    data: {
-      name: file.originalname,
-      storagePath: file.path,
-      size: file.size,
-      userId: user.id,
+);
+
+// find user
+app.get("/users/:id", authenticateToken, async (req, res) => {
+  const user = await prisma.user.findFirst({
+    where: { id: req.params.id },
+    select: {
+      id: true,
+      username: true,
+      files: true,
+      folders: {
+        include: {
+          files: true,
+        },
+      },
     },
   });
-  console.log(query);
-  res.status(201).json({ message: "File uploaded", file: req.file });
+  res.json(user);
+});
+
+app.get("/files/:fileId", authenticateToken, async (req, res) => {
+  const fileId = req.params.fileId;
+  try {
+    const file = await prisma.file.findFirst({
+      where: { id: fileId },
+    });
+    if (req.user.id !== file.userId)
+      return res.status(401).json({ message: "You are not owner of the file" });
+    const filePath = path.join(__dirname, file.storagePath);
+
+    res.download(filePath, file.name, (err) => {
+      if (err) {
+        console.log(err);
+        res.send(500).json(err);
+      } else {
+        console.log("sent");
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 app.listen(process.env.PORT || 3001, () => {
