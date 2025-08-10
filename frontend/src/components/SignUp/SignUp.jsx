@@ -1,8 +1,8 @@
 import styles from "./SignUp.module.css";
 import { useState } from "react";
 export function SignUp() {
-  const [username, setUsername] = useState(null);
-  const [password, setPassword] = useState(null);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -12,7 +12,9 @@ export function SignUp() {
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-      if (res.ok) console.log("res ok");
+      if (res.ok) {
+        alert("res ok");
+      }
       console.log("res not ok");
     } catch (err) {
       alert(err);
