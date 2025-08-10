@@ -1,21 +1,41 @@
 import styles from "./Login.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch("http://localhost:3000/me", {
+          credentials: "include",
+        });
+        if (res.ok) navigate("/");
+      } catch (err) {
+        alert(err);
+      }
+    }
+    fetchData();
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
     try {
       const res = await fetch("http://localhost:3000/login", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
       if (res.ok) {
-        alert("res ok");
+        navigate("/");
       }
-      console.log("res not ok");
+      const result = await res.json();
+      setMessage({ message: result.message, ok: res.ok });
     } catch (err) {
       alert(err);
     }
@@ -53,7 +73,21 @@ export function Login() {
                 required
               ></input>
             </div>
-            <button>Log in</button>
+            <div className={styles.signUp}>
+              <p className={styles.prompt}>
+                Don't have an account? <Link to={"/sign-up"}>Sign up</Link>
+              </p>
+              {message && (
+                <p>
+                  <span
+                    className={message.ok ? styles.errorGreen : styles.errorRed}
+                  >
+                    {message.message + "!"}
+                  </span>
+                </p>
+              )}
+            </div>
+            <button className={styles.button}>Log in</button>
           </form>
         </div>
       </div>

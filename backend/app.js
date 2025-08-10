@@ -11,9 +11,11 @@ const prisma = new PrismaClient();
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
     origin: "http://localhost:5173",
+    credentials: true,
   })
 );
 
@@ -37,7 +39,8 @@ app.post("/sign-up", async (req, res) => {
   const user = await prisma.user.findFirst({
     where: { username: req.body.username },
   });
-  if (user) return res.status(409).json({ message: "username taken" });
+  if (user)
+    return res.status(409).json({ message: "Username is already taken" });
 
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
   try {
@@ -54,6 +57,45 @@ app.post("/sign-up", async (req, res) => {
   }
 });
 
+app.post("/login", async (req, res) => {
+  const user = await prisma.user.findFirst({
+    where: { username: req.body.username },
+  });
+  console.log(user);
+
+  if (!user || !(await bcrypt.compare(req.body.password, user.password)))
+    return res.status(401).json({ message: "Invalid credentials" });
+
+  const token = jwt.sign(
+    { username: req.body.username },
+    process.env.JWT_SECRET
+  );
+  console.log(token);
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+  });
+  res.status(200).json({ message: "Logged in" });
+});
+
+app.get("/me", (req, res) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ message: "Invalid token" });
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    res.status(200).json({ user: payload.username });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err });
+  }
+});
+
+app.get("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logged out succesfully" });
+});
 app.listen(process.env.PORT || 3001, () => {
   console.log("Server is running");
 });

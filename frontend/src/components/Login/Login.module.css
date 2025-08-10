@@ -33,7 +33,7 @@ input {
   color: rgb(255, 124, 124);
   margin-right: 5px;
 }
-button {
+.button {
   width: 100%;
   background-color: white;
   color: rgb(10, 10, 10);
@@ -44,10 +44,10 @@ button {
   font-weight: 500;
   padding: 0.5rem 2rem;
 }
-button:hover {
+.button:hover {
   opacity: 0.9;
 }
-button:active {
+.button:active {
   opacity: 0.6;
 }
 
@@ -57,4 +57,21 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px rgb(10, 10, 10) inset !important;
   -webkit-text-fill-color: #ffffff !important; /* цвет текста */
+}
+
+.signUp p {
+  color: #b0b0b0;
+}
+.signUp a {
+  color: white;
+}
+.errorRed {
+  color: rgb(255, 124, 124);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.errorGreen {
+  color: rgb(124, 255, 130);
+  font-size: 1.1rem;
+  font-weight: 600;
 }

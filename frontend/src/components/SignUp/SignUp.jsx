@@ -1,8 +1,12 @@
 import styles from "./SignUp.module.css";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export function SignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(null);
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -10,17 +14,35 @@ export function SignUp() {
       const res = await fetch("http://localhost:3000/sign-up", {
         method: "POST",
         headers: { "Content-type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ username, password }),
       });
       if (res.ok) {
-        alert("res ok");
+        login();
       }
-      console.log("res not ok");
+      const result = await res.json();
+      setMessage({ message: result.message, ok: res.ok });
     } catch (err) {
       alert(err);
     }
   }
-
+  async function login() {
+    try {
+      const res = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+      if (res.ok) {
+        navigate("/");
+      }
+      const result = await res.json();
+      setMessage({ message: result.message, ok: res.ok });
+    } catch (err) {
+      alert(err);
+    }
+  }
   return (
     <>
       <div className={styles.main}>
@@ -53,7 +75,23 @@ export function SignUp() {
                 required
               ></input>
             </div>
-            <button>Sign up</button>
+            <div className={styles.login}>
+              <p className={styles.prompt}>
+                Already have an account? <Link to={"/login"}>Log in</Link>
+              </p>
+              {message && (
+                <p>
+                  <span
+                    className={message.ok ? styles.errorGreen : styles.errorRed}
+                  >
+                    {message.ok
+                      ? "You succesfully signed in!"
+                      : message.message + "."}
+                  </span>
+                </p>
+              )}
+            </div>
+            <button className={styles.button}>Sign up</button>
           </form>
         </div>
       </div>

@@ -1,9 +1,54 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import styles from "./App.module.css";
 function App() {
-  return (
-    <>
-      <p>hi</p>
-    </>
-  );
+  const [user, setUser] = useState(null);
+  async function fetchMe() {
+    try {
+      const res = await fetch("http://localhost:3000/me", {
+        credentials: "include",
+      });
+      if (res.ok) {
+        const userData = await res.json();
+        console.log(userData);
+        setUser(userData);
+      } else {
+        setUser(null); // if no user
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async function logOut() {
+    try {
+      const res = await fetch("http://localhost:3000/logout", {
+        credentials: "include",
+      });
+      if (res.ok) fetchMe();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  useEffect(() => {
+    fetchMe();
+  }, []);
+
+  if (user) {
+    return (
+      <>
+        <p>Hello, {user.user}</p>
+        <button onClick={logOut}>Log out</button>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <p className={styles.loginPrompt}>
+          You need to <Link to={"/login"}>log in</Link> first
+        </p>
+      </>
+    );
+  }
 }
 
 export default App;
