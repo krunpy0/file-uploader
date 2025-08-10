@@ -1,0 +1,11 @@
+body,
+html {
+  font-family: "Inter", sans-serif;
+  background-color: rgb(10, 10, 10);
+  color: rgb(247, 247, 247);
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
