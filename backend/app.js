@@ -67,7 +67,7 @@ app.post("/login", async (req, res) => {
     return res.status(401).json({ message: "Invalid credentials" });
 
   const token = jwt.sign(
-    { username: req.body.username },
+    { username: req.body.username, id: user.id },
     process.env.JWT_SECRET
   );
   console.log(token);
@@ -96,6 +96,45 @@ app.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.status(200).json({ message: "Logged out succesfully" });
 });
+
+// FILE UPLOADING HERE       FILE UPLOADING       HERE FILE UPLOADING HERE
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./uploads");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({ storage });
+app.post("/upload", upload.single("file"), async (req, res) => {
+  // verify user
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ message: "Invalid token" });
+  let user;
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    user = payload;
+    console.log(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err });
+  }
+  //
+  const file = req.file;
+  const query = await prisma.file.create({
+    data: {
+      name: file.originalname,
+      storagePath: file.path,
+      size: file.size,
+      userId: user.id,
+    },
+  });
+  console.log(query);
+  res.status(201).json({ message: "File uploaded", file: req.file });
+});
+
 app.listen(process.env.PORT || 3001, () => {
   console.log("Server is running");
 });

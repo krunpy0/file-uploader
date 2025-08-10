@@ -34,8 +34,9 @@ model Folder {
 model File {
   id          String   @id @default(uuid())
   name        String
-  createdAt   DateTime
+  createdAt   DateTime @default(now())
   storagePath String // путь на диске
+  size        Int
   user        User     @relation(fields: [userId], references: [id])
   userId      String
   Folder      Folder?  @relation(fields: [folderId], references: [id])

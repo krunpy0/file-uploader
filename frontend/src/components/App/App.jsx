@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { UploadFile } from "../UploadFile/UploadFile";
 import styles from "./App.module.css";
 function App() {
   const [user, setUser] = useState(null);
@@ -38,6 +39,7 @@ function App() {
       <>
         <p>Hello, {user.user}</p>
         <button onClick={logOut}>Log out</button>
+        <UploadFile></UploadFile>
       </>
     );
   } else {
