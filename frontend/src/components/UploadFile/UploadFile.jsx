@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import styles from "../App/App.module.css";
 export function UploadFile({ fetchMe, onUploadSuccess, folder }) {
   const [file, setFile] = useState(null);
   const [folderName, setFolderName] = useState("");
@@ -50,15 +49,17 @@ export function UploadFile({ fetchMe, onUploadSuccess, folder }) {
 
   return (
     <>
-      <div>
+      <div className={styles.upload}>
         <input type="file" onChange={handleFileChange} />
         <button onClick={handleUpload}>Upload</button>
       </div>
       {folder ? (
         <div></div>
       ) : (
-        <div>
-          <label htmlFor="folderName">Folder name</label>
+        <div className={styles.createFolder}>
+          <div>
+            <label htmlFor="folderName">Folder name</label>
+          </div>
           <input
             type="text"
             name="folderName"

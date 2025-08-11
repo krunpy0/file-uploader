@@ -63,21 +63,24 @@ export function YourFiles({ user, refreshTrigger }) {
   if (!user) return <div>Loading</div>;
   if (!userInfo) return <p>Loading user info...</p>;
 
+  const filesOutside =
+    userInfo.files?.filter((file) => file.folderId === null) || [];
+  console.log(filesOutside);
   return (
     <>
-      <div>
+      <div className={styles.main}>
         <h1>Your files</h1>
         <div className="folders">
           <h2>Folders</h2>
           <div>
             {userInfo.folders?.map((folder) => (
-              <div key={folder.id}>
+              <div key={folder.id} className={styles.folder}>
                 <h3>{folder.name}</h3>
                 <UploadFile folder={folder.id}></UploadFile>
                 <p>Files:</p>
                 {folder.files.map((file) => (
                   <>
-                    <div key={file.id}>
+                    <div key={file.id} className={styles.file}>
                       <a
                         className={styles.link}
                         href={`http://localhost:3000/files/${file.id}`}
@@ -85,10 +88,12 @@ export function YourFiles({ user, refreshTrigger }) {
                       >
                         {file.name}
                       </a>
-                      <p>
-                        {dayjs(file.createdAt).format("DD MMMM YYYY, HH:mm")}
-                      </p>
-                      {humanFileSize(file.size)}
+                      <div className={styles.info}>
+                        <p>
+                          {dayjs(file.createdAt).format("DD MMMM YYYY, HH:mm")},
+                        </p>
+                        <p>{humanFileSize(file.size)}</p>
+                      </div>
                       <button
                         onClick={() => {
                           handleDelete(file.id);
@@ -96,38 +101,39 @@ export function YourFiles({ user, refreshTrigger }) {
                       >
                         Delete
                       </button>
-                      <hr />
                     </div>
                   </>
                 ))}
-                <hr />
               </div>
             ))}
           </div>
         </div>
         <div>
           <h2>Outside of folders</h2>
-          {userInfo.files?.map((file) => (
-            <div key={file.id}>
-              <a
-                className={styles.link}
-                href={`http://localhost:3000/files/${file.id}`}
-                target="__blank"
-              >
-                {file.name}
-              </a>
-              <p>{dayjs(file.createdAt).format("DD MMMM YYYY, HH:mm")}</p>
-              {humanFileSize(file.size)}
-              <button
-                onClick={() => {
-                  handleDelete(file.id);
-                }}
-              >
-                Delete
-              </button>
-              <hr />
-            </div>
-          ))}
+          <div className={styles.folder}>
+            {filesOutside.map((file) => (
+              <>
+                <div key={file.id} className={styles.file}>
+                  <a
+                    className={styles.link}
+                    href={`http://localhost:3000/files/${file.id}`}
+                    target="__blank"
+                  >
+                    {file.name}
+                  </a>
+                  <p>{dayjs(file.createdAt).format("DD MMMM YYYY, HH:mm")}</p>
+                  {humanFileSize(file.size)}
+                  <button
+                    onClick={() => {
+                      handleDelete(file.id);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </>
+            ))}
+          </div>
         </div>
       </div>
     </>

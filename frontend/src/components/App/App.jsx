@@ -43,7 +43,7 @@ function App() {
 
   if (user) {
     return (
-      <>
+      <div className={styles.loggedIn}>
         <p>Hello, {user.user}</p>
         <button onClick={logOut}>Log out</button>
         <UploadFile
@@ -51,7 +51,7 @@ function App() {
           fetchMe={fetchMe}
         ></UploadFile>
         <YourFiles user={user} refreshTrigger={refreshTrigger}></YourFiles>
-      </>
+      </div>
     );
   } else {
     return (

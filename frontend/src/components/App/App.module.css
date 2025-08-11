@@ -2,3 +2,37 @@
   color: white;
   font-weight: 600;
 }
+.loggedIn {
+  margin-bottom: 36px;
+}
+.loggedIn button {
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+  border-radius: 0.5rem;
+  margin: 4px;
+  border: none;
+  padding: 0.5rem 1rem;
+}
+.loggedIn button:hover {
+  opacity: 0.9;
+}
+.loggedIn button:active {
+  opacity: 0.7;
+}
+.upload {
+  display: flex;
+  align-items: center;
+}
+.upload input {
+  max-width: 200px;
+}
+.createFolder {
+  display: flex;
+  align-items: centerw;
+}
+.createFolder input {
+  background-color: rgb(20, 20, 20) !important;
+  color: white;
+  border: 1px solid rgb(64, 64, 64) !important;
+  border-radius: 0.5rem;
+}

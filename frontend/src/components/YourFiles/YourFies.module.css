@@ -1,3 +1,46 @@
 .link {
   color: white;
 }
+.main,
+.folder {
+  background-color: rgb(20, 20, 20);
+  border: 1px solid rgb(60, 60, 60);
+  border-radius: 1rem;
+  margin: 8px 0px;
+  padding: 0px 8px;
+}
+.folder {
+  background-color: rgb(30, 30, 30);
+}
+.file {
+  background-color: rgb(20, 20, 20);
+  border: 1px solid rgb(60, 60, 60);
+  border-radius: 1rem;
+  margin: 8px 0px;
+  padding: 8px 8px;
+  max-width: 600px;
+  width: 100%;
+}
+.file a {
+  font-size: 1.2rem;
+}
+.file .info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.file .info p {
+  color: rgb(163, 163, 163);
+}
+.file button {
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+  border: none;
+  padding: 0.5rem 1rem;
+}
+.file button:hover {
+  opacity: 0.9;
+}
+.file button:active {
+  opacity: 0.6;
+}
