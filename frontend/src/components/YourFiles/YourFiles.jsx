@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/en";
 import styles from "./YourFies.module.css";
+import { UploadFile } from "../UploadFile/UploadFile";
 dayjs.locale("en");
 export function YourFiles({ user, refreshTrigger }) {
   const [userInfo, setUserInfo] = useState(null);
@@ -66,7 +67,46 @@ export function YourFiles({ user, refreshTrigger }) {
     <>
       <div>
         <h1>Your files</h1>
+        <div className="folders">
+          <h2>Folders</h2>
+          <div>
+            {userInfo.folders?.map((folder) => (
+              <div key={folder.id}>
+                <h3>{folder.name}</h3>
+                <UploadFile folder={folder.id}></UploadFile>
+                <p>Files:</p>
+                {folder.files.map((file) => (
+                  <>
+                    <div key={file.id}>
+                      <a
+                        className={styles.link}
+                        href={`http://localhost:3000/files/${file.id}`}
+                        target="__blank"
+                      >
+                        {file.name}
+                      </a>
+                      <p>
+                        {dayjs(file.createdAt).format("DD MMMM YYYY, HH:mm")}
+                      </p>
+                      {humanFileSize(file.size)}
+                      <button
+                        onClick={() => {
+                          handleDelete(file.id);
+                        }}
+                      >
+                        Delete
+                      </button>
+                      <hr />
+                    </div>
+                  </>
+                ))}
+                <hr />
+              </div>
+            ))}
+          </div>
+        </div>
         <div>
+          <h2>Outside of folders</h2>
           {userInfo.files?.map((file) => (
             <div key={file.id}>
               <a

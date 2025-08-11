@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export function UploadFile({ fetchMe, onUploadSuccess }) {
+export function UploadFile({ fetchMe, onUploadSuccess, folder }) {
   const [file, setFile] = useState(null);
+  const [folderName, setFolderName] = useState("");
   function handleFileChange(e) {
     setFile(e.target.files[0]);
   }
@@ -13,6 +14,9 @@ export function UploadFile({ fetchMe, onUploadSuccess }) {
     }
     const formData = new FormData();
     formData.append("file", file);
+    if (folder) {
+      formData.append("folder", folder);
+    }
 
     try {
       const res = await fetch("http://localhost:3000/upload", {
@@ -29,12 +33,42 @@ export function UploadFile({ fetchMe, onUploadSuccess }) {
       console.log(err);
     }
   }
+
+  async function createFolder() {
+    try {
+      const res = await fetch("http://localhost:3000/createFolder", {
+        credentials: "include",
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ currentFolder: null, folderName }),
+      });
+    } catch (err) {
+      alert(err);
+      console.error(err);
+    }
+  }
+
   return (
     <>
       <div>
         <input type="file" onChange={handleFileChange} />
         <button onClick={handleUpload}>Upload</button>
       </div>
+      {folder ? (
+        <div></div>
+      ) : (
+        <div>
+          <label htmlFor="folderName">Folder name</label>
+          <input
+            type="text"
+            name="folderName"
+            id="folderName"
+            value={folderName}
+            onChange={(e) => setFolderName(e.target.value)}
+          />
+          <button onClick={createFolder}>Create folder</button>
+        </div>
+      )}
     </>
   );
 }

@@ -124,12 +124,16 @@ app.post(
     //
     const file = req.file;
     const user = req.user;
+    if (req.body.folder) {
+      console.log(req.body.folder);
+    }
     const query = await prisma.file.create({
       data: {
         name: file.originalname,
         storagePath: file.path,
         size: file.size,
         userId: user.id,
+        folderId: req.body.folder ? req.body.folder : null,
       },
     });
     console.log(query);
@@ -192,6 +196,28 @@ app.delete("/delete/file/:id", authenticateToken, async (req, res) => {
     return res.send(204).json({ message: "Deleted" });
   } catch (err) {
     console.log(err);
+  }
+});
+
+app.post("/createFolder", authenticateToken, async (req, res) => {
+  // if (!req.body.currentFolder) {
+  try {
+    const data = {
+      userId: req.user.id,
+      name: req.body.folderName,
+    };
+    if (req.body.currentFolder) {
+      data.parentId = req.body.currentFolder;
+    }
+
+    const query = await prisma.folder.create({
+      data,
+    });
+    res.send(200);
+    console.log(query);
+  } catch (err) {
+    console.log(err);
+    res.send(500);
   }
 });
 

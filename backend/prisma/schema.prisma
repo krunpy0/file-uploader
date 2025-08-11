@@ -28,6 +28,9 @@ model Folder {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   createdAt DateTime @default(now())
+  parent    Folder?  @relation("FolderHierarchy", fields: [parentId], references: [id])
+  parentId  String?
+  children  Folder[] @relation("FolderHierarchy")
   files     File[]
 }
 
